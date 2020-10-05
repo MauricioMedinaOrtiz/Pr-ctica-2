@@ -1,0 +1,172 @@
+PROCESSOR 16F887;pic a utilizar
+#include <xc.inc>
+;CONFIG word1
+CONFIG FOSC = INTRC_NOCLKOUT
+CONFIG WDTE = OFF
+CONFIG PWRTE = ON
+CONFIG MCLRE = OFF
+CONFIG CP = OFF
+CONFIG CPD = OFF
+CONFIG BOREN = OFF
+CONFIG IESO = OFF
+CONFIG FCMEN = ON
+CONFIG DEBUG = ON
+;CONFIG word2
+CONFIG BOR4V=BOR40V
+CONFIG WRT = OFF
+PSECT udata;variables usadas
+MAU1:
+    DS 1
+MAU2:
+    DS 1
+MAU3:
+    DS 1
+PSECT resetVec,class=CODE,delta=2
+resetVec:
+PAGESEL main
+goto main
+    
+PSECT code;empieza codigo de cada numero
+Numero0:;numero cero
+BANKSEL PORTB
+movlw 0b00111111
+movwf PORTB
+PAGESEL main
+return
+
+PSECT code
+Numero1:;numero uno
+BANKSEL PORTB
+movlw 0b00000110
+movwf PORTB
+PAGESEL main
+return
+
+PSECT code
+Numero2:;numero dos
+BANKSEL PORTB
+movlw 0b01011011
+movwf PORTB
+PAGESEL main
+return
+    
+PSECT code
+Numero3:;numero tres
+BANKSEL PORTB
+movlw 0b01001111
+movwf PORTB
+PAGESEL main
+return    
+
+PSECT code
+Numero4:;numero cuatro
+BANKSEL PORTB
+movlw 0b01100110
+movwf PORTB
+PAGESEL main
+return
+
+PSECT code
+Numero5:;numero cinco
+BANKSEL PORTB
+movlw 0b01101101
+movwf PORTB
+PAGESEL main
+return
+   
+PSECT code
+Numero6:;numero seis
+BANKSEL PORTB
+movlw 0b01111101
+movwf PORTB
+PAGESEL main
+return
+
+PSECT code
+Numero7:;numero siete
+BANKSEL PORTB
+movlw 0b00000111
+movwf PORTB
+PAGESEL main
+return
+
+PSECT code
+Numero8:;numero ocho
+BANKSEL PORTB
+movlw 0b01111111
+movwf PORTB
+PAGESEL main
+return
+
+PSECT code
+Numero9:;numero nueve
+BANKSEL PORTB
+movlw 0b01101111
+movwf PORTB
+PAGESEL main
+return
+
+PSECT code;codigo de tiempo
+delay_255us:
+movlw   0xff
+movwf   MAU3
+decfsz MAU3
+goto $-1
+return
+
+PSECT code
+delay_65ms:
+movlw   0xff
+movwf   MAU2
+call delay_255us
+decfsz MAU2
+goto $-2
+return
+ 
+PSECT code
+delay_500ms:
+movlw   0x08
+movwf MAU1
+call delay_65ms
+decfsz  MAU1
+goto $-2
+return
+   
+PSECT code
+main:
+bcf STATUS,0
+bcf STATUS,5
+bcf STATUS,6
+BANKSEL ANSELH
+CLRF ANSELH
+BANKSEL TRISB
+MOVLW 0b00000000
+MOVWF TRISB
+BANKSEL PORTB
+CLRF PORTB
+BANKSEL OSCCON
+MOVLW  0b01110000
+MOVWF  OSCCON
+INICIO:;llamamos a cada numero a mostrar
+call Numero0
+call delay_500ms
+call Numero1
+call delay_500ms
+call Numero2
+call delay_500ms   
+call Numero3
+call delay_500ms
+call Numero4
+call delay_500ms
+call Numero5
+call delay_500ms
+call Numero6
+call delay_500ms
+call Numero7
+call delay_500ms
+call Numero8
+call delay_500ms
+call Numero9
+call delay_500ms
+GOTO INICIO;volvemos a iniciar
+END;fin de programa
